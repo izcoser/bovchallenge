@@ -35,6 +35,14 @@ farmer_yearly_price/<str:farmer_code>/<int:year>
 
 ## GET
 
+O GET pode ser usado em todos os endpoints e lista os custos, fazendeiros, fazendas, entregas, etc.
+
+```
+farmer_output/: retorna a quantidade de leite produzido pelas fazendas de um fazendeiro em um mês.
+farmer_monthly_price/: retorna o preço do litro de leite no mês.
+farmer_yearly_price/: retorna os preços em cada mês do ano.
+```
+
 ```
 http http://127.0.0.1:8000/costs/
 
@@ -69,8 +77,18 @@ http http://127.0.0.1:8000/deliveries/
     }
 ]
 ```
+```
+http http://127.0.0.1:8000/farmer_monthly_price/jds001/8/2022
+{
+    "price_br": "433,88",
+    "price_en": "433.88"
+}
+
+```
 
 ## POST
+
+O POST é usado nos endpoints costs/, farmers/, farms/ e deliveries/ para criar registros, como exemplificado abaixo.
 
 ```
 http --json POST http://127.0.0.1:8000/farmers/ name="João Carlos" code="jcarlos1" cnpj="13245"

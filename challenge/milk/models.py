@@ -7,7 +7,7 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-class BaseCost(models.Model):
+class Cost(models.Model):
     # Usando DecimalField porque vamos lidar com cálculos monetários e Float possui problemas de precisão.
     
     # Preço base por litro.
@@ -22,12 +22,15 @@ class BaseCost(models.Model):
     # Bônus p/ produção acima de 10.000 L, por litro.
     bonus = models.DecimalField(max_digits=6, decimal_places=3)
 
-    class Meta:
-        abstract = True
+    # Semestre 1 ou 2.
+    semester = models.SmallIntegerField()
 
 class Farmer(BaseModel):
     code = models.CharField(max_length=10)
     cnpj = models.CharField(max_length=18)
+
+    def __str__(self):
+        return f'{self.name}, {self.code}'
 
 class Farm(BaseModel):
     # Distância até a fábrica, em km.
@@ -35,18 +38,16 @@ class Farm(BaseModel):
     # com precisão até o último metro.
     distance = models.DecimalField(max_digits=8, decimal_places=3)
     code = models.CharField(max_length=10)
-    owner = models.OneToOneField(Farmer, on_delete=models.CASCADE, primary_key=True)
+    owner = models.ForeignKey(Farmer, on_delete=models.CASCADE)
 
-# Custos do primeiro semestre.
-class CostFirst(BaseCost):
-    pass
-
-# Custos do segundo semestre.
-class CostSecond(BaseCost):
-    pass
+    def __str__(self):
+        return f'{self.name}, {self.code}, owner={self.owner}'
 
 class MilkDeliveries(models.Model):
-    farm = models.OneToOneField(Farm, on_delete=models.CASCADE, primary_key=True)
+    farm = models.ForeignKey(Farm, on_delete=models.CASCADE)
     # Quantidade entregue, em litros, com precisão de mililitro.
     amount = models.DecimalField(max_digits=15, decimal_places=3)
     date = models.DateTimeField()
+
+    def __str__(self):
+        return f'{self.amount}l delivered from {self.farm} on {self.date}'
